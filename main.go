@@ -4,7 +4,8 @@ import (
 	"log"
 	"os"
 
-	"github.com/Elven9/Lab-Backend/router"
+	"Elven9/Lab-Backend/router"
+
 	"github.com/gin-gonic/gin"
 )
 

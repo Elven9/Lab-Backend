@@ -3,7 +3,7 @@ package router
 import (
 	"github.com/gin-gonic/gin"
 
-	"github.com/Elven9/Lab-Backend/router/handler"
+	"Elven9/Lab-Backend/router/handler"
 )
 
 // SetUpRouter ,初始化 Router
