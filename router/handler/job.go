@@ -11,7 +11,7 @@ import (
 )
 
 type jobInfo struct {
-	JobId          string `json:"job_id"`
+	JobID          string `json:"job_id"`
 	JobType        string `json:"job_type"`
 	SubmissionTime string `json:"submission_time"`
 	StartTime      string `json:"start_time"`
@@ -43,7 +43,7 @@ func GetJobs(ctx *gin.Context) {
 		Items []struct {
 			Metadata struct {
 				Name              string `json:"name"`
-				Uid               string `json:"uid"`
+				UID               string `json:"uid"`
 				CreationTimestamp string `json:"creationTimestamp"`
 			} `json:"metadata"`
 			Status struct {
@@ -64,9 +64,9 @@ func GetJobs(ctx *gin.Context) {
 		endTimeP, _ := time.Parse(time.RFC3339, item.Status.CompletionTime)
 
 		result = append(result, jobInfo{
-			JobId:          item.Metadata.Uid,
+			JobID:          item.Metadata.UID,
 			JobType:        "TODO",
-			SubmissionTime: item.Metadata.CreationTimestamp,
+			SubmissionTime: "TODO",
 			StartTime:      item.Status.StartTime,
 			EndTime:        item.Status.CompletionTime,
 			ExeTime:        endTimeP.Sub(startTimeP).String(),

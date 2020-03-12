@@ -38,11 +38,11 @@ func GetSystemInfo(ctx *gin.Context) {
 		Items []struct {
 			Metadata struct {
 				Name string `json:"name"`
-				Uid  string `json:"uid"`
+				UID  string `json:"uid"`
 			} `json:"metadata"`
 			Status struct {
 				Capacity struct {
-					Cpu    string `json:"cpu"`
+					CPU    string `json:"cpu"`
 					Memory string `json:"memory"`
 					Pods   string `json:"pods"`
 				} `json:"capacity"`
@@ -63,7 +63,7 @@ func GetSystemInfo(ctx *gin.Context) {
 			NodeCount:     1,
 			CPUType:       "TODO",
 			CPUCapacity:   item.Status.Capacity.Pods,
-			CPUCount:      item.Status.Capacity.Cpu,
+			CPUCount:      item.Status.Capacity.CPU,
 			MemorySize:    item.Status.Capacity.Memory,
 			GPUType:       "TODO",
 			GPUCapacity:   "TODO",
