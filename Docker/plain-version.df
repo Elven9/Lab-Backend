@@ -25,4 +25,4 @@ COPY --from=build /root/source/server /root/server
 
 EXPOSE 8080/tcp
 
-CMD ["./server"]
+# CMD ["./server"]
