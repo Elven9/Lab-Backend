@@ -12,6 +12,7 @@ import (
 )
 
 type jobInfo struct {
+	JobName        string `json:"job_name"`
 	JobID          string `json:"job_id"`
 	JobType        string `json:"job_type"`
 	SubmissionTime string `json:"submission_time"`
@@ -111,6 +112,7 @@ func GetJobs(ctx *gin.Context) {
 		sort.Sort(&condition)
 
 		result = append(result, jobInfo{
+			JobName:        item.Metadata.Name,
 			JobID:          item.Metadata.UID,
 			JobType:        "TODO",
 			SubmissionTime: item.Metadata.CreationTimestamp,
