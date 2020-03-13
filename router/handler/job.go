@@ -62,6 +62,8 @@ func (jc *jobConditions) GetState() int {
 		return 0
 	case "TFJobRunning":
 		return 1
+	case "TFJobFailed":
+		return 2
 	}
 	return 2
 }
