@@ -10,13 +10,15 @@ import (
 )
 
 type target struct {
-	Type int    `json:"type"`
+	Type string `json:"type"`
 	ID   string `json:"id"`
 }
 
 type podData struct {
-	NodeID string `json:"nodeId"`
-	PodID  string `json:"podId"`
+	NodeID   string `json:"nodeId"`
+	PodID    string `json:"podId"`
+	CPUUsage string `json:"cpuUsage"`
+	MemUsage string `json:"memUsage"`
 }
 
 type userPayload struct {
@@ -75,20 +77,24 @@ func GetAllocation(ctx *gin.Context) {
 		var data []podData
 
 		for _, pod := range pods.Items {
-			if target.Type == 0 {
+			if target.Type == "Node" {
 				// Extract Node Data
 				if target.ID == pod.Spec.NodeName {
 					data = append(data, podData{
-						NodeID: pod.Spec.NodeName,
-						PodID:  pod.Metadata.Name,
+						NodeID:   pod.Spec.NodeName,
+						PodID:    pod.Metadata.Name,
+						CPUUsage: pod.Spec.Containers[0].Resources.Requests.CPU + " core(s)",
+						MemUsage: pod.Spec.Containers[0].Resources.Requests.Memory,
 					})
 				}
-			} else if target.Type == 1 {
+			} else if target.Type == "Job" {
 				// Extract Specific Job
 				if target.ID == pod.Metadata.Labels.JobName {
 					data = append(data, podData{
-						NodeID: pod.Spec.NodeName,
-						PodID:  pod.Metadata.Name,
+						NodeID:   pod.Spec.NodeName,
+						PodID:    pod.Metadata.Name,
+						CPUUsage: pod.Spec.Containers[0].Resources.Requests.CPU + " core(s)",
+						MemUsage: pod.Spec.Containers[0].Resources.Requests.Memory,
 					})
 				}
 			}
