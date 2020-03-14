@@ -18,7 +18,7 @@ func SetUpRouter(engine *gin.Engine) {
 	engine.GET("queue/service", handler.GetServiceInfo)
 
 	// Allocation
-	engine.GET("resource/allocation", handler.GetAllocation)
+	engine.POST("resource/allocation", handler.GetAllocation)
 
 	// Jobs
 	engine.GET("job/getJobs", handler.GetJobs)
