@@ -6,6 +6,7 @@ import (
 
 	"Elven9/Lab-Backend/router"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 )
 
@@ -16,6 +17,9 @@ func init() {
 
 func main() {
 	engine := gin.Default()
+
+	// CORS Plugin
+	engine.Use(cors.Default())
 
 	router.SetUpRouter(engine)
 
