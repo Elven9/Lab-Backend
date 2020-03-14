@@ -1,7 +1,7 @@
 apiVersion: kubeflow.org/v1
 kind: TFJob
 metadata:
-  name: successJob1
+  name: successjob1
 spec:
   max-instances: 4
   min-instances: 1
