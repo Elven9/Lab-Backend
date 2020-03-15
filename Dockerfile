@@ -25,4 +25,6 @@ COPY --from=build /root/source/server /root/server
 
 EXPOSE 8080/tcp
 
+ENV GIN_MODE=release
+
 CMD ["./server"]

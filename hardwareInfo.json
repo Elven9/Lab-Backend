@@ -1,0 +1,10 @@
+[
+  {
+    "nodeName": "k8s-api-0",
+    "cpuType": "Intel(R) Xeon(R) CPU E5-2648L v2 @ 1.90GHz",
+    "gpuType": "TODO",
+    "gpuCapacity": "TODO",
+    "gpuCount": "TODO",
+    "gpuMemorySize": "TODO"
+  }
+]

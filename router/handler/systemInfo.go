@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"log"
+	"os"
 	"os/exec"
 
 	"github.com/gin-gonic/gin"
@@ -20,6 +21,15 @@ type systemInfo struct {
 	GPUCapacity   string `json:"gpu_capacity"`
 	GPUCount      string `json:"gpu_count"`
 	GPUMemorySize string `json:"gpu_memory_size"`
+}
+
+type hardcodedInfo struct {
+	NodeName      string `json:"nodeName"`
+	CPUType       string `json:"cpuType"`
+	GPUType       string `json:"gpuType"`
+	GPUCapacity   string `json:"gpuCapacity"`
+	GPUCount      string `json:"gpuCount"`
+	GPUMemorySize string `json:"gpuMemorySize"`
 }
 
 // GetSystemInfo ,Handler Func for System Info.
@@ -54,21 +64,31 @@ func GetSystemInfo(ctx *gin.Context) {
 	json.Unmarshal(outBuf.Bytes(), &nodeInfos)
 
 	// Construct final payload
-	// [TODO]: Add Real Hardware Resource
+	var realHardwareInfo []hardcodedInfo
+	hardwareInfoFile, _ := os.Open("./hardwareInfo.json")
+	decoder := json.NewDecoder(hardwareInfoFile)
+	decoder.Decode(&realHardwareInfo)
 
 	var result []systemInfo
 	for _, item := range nodeInfos.Items {
+		// real hardware info
+		var info hardcodedInfo
+		for _, i := range realHardwareInfo {
+			if item.Metadata.Name == i.NodeName {
+				info = i
+			}
+		}
 		result = append(result, systemInfo{
 			NodeType:      item.Metadata.Name,
 			NodeCount:     1,
-			CPUType:       "TODO",
+			CPUType:       info.NodeName,
 			CPUCapacity:   item.Status.Capacity.Pods,
 			CPUCount:      item.Status.Capacity.CPU,
 			MemorySize:    item.Status.Capacity.Memory,
-			GPUType:       "TODO",
-			GPUCapacity:   "TODO",
-			GPUCount:      "TODO",
-			GPUMemorySize: "TODO",
+			GPUType:       info.GPUType,
+			GPUCapacity:   info.GPUCapacity,
+			GPUCount:      info.GPUCount,
+			GPUMemorySize: info.GPUMemorySize,
 		})
 	}
 
