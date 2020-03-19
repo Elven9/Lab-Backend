@@ -58,6 +58,10 @@ func (jc *jobConditions) GetState() int {
 	// State 2: Failed
 	// State 3: Waiting
 
+	if len(jc.Conditions) == 0 {
+		return -1
+	}
+
 	switch jc.Conditions[0].Reason {
 	case "TFJobSucceeded":
 		return 0
@@ -66,7 +70,7 @@ func (jc *jobConditions) GetState() int {
 	case "TFJobFailed":
 		return 2
 	}
-	return 2
+	return -1
 }
 
 // GetJobs ,取得 TF JOBS 的資料
@@ -102,6 +106,8 @@ func GetJobs(ctx *gin.Context) {
 	var result []jobInfo
 
 	for _, item := range jobInfos.Items {
+
+		// Prepare Exe Time
 		startTimeP, _ := time.Parse(time.RFC3339, item.Status.StartTime)
 		endTimeP, _ := time.Parse(time.RFC3339, item.Status.CompletionTime)
 
@@ -109,7 +115,17 @@ func GetJobs(ctx *gin.Context) {
 		var condition jobConditions
 
 		condition.Populate(item.Status.Conditions)
-		sort.Sort(&condition)
+
+		if len(condition.Conditions) != 1 {
+			sort.Sort(&condition)
+		}
+
+		exeTime := ""
+
+		if condition.GetState() != -1 && condition.GetState() != 1 {
+			// Have Already Failed or Succeeded.
+			exeTime = endTimeP.Sub(startTimeP).String()
+		}
 
 		result = append(result, jobInfo{
 			JobName:        item.Metadata.Name,
@@ -118,7 +134,7 @@ func GetJobs(ctx *gin.Context) {
 			SubmissionTime: item.Metadata.CreationTimestamp,
 			StartTime:      item.Status.StartTime,
 			EndTime:        item.Status.CompletionTime,
-			ExeTime:        endTimeP.Sub(startTimeP).String(),
+			ExeTime:        exeTime,
 			WaitTime:       "TODO",
 			State:          condition.GetState(),
 		})

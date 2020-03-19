@@ -22,6 +22,7 @@ RUN apk update \
 COPY k8s-config /root/.kube/config
 
 COPY --from=build /root/source/server /root/server
+COPY hardwareInfo.json /root/hardwareInfo.json
 
 EXPOSE 8080/tcp
 
