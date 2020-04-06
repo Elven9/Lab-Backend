@@ -1,7 +1,7 @@
 apiVersion: kubeflow.org/v1
 kind: TFJob
 metadata:
-  name: successjob3
+  name: cpu1
 spec:
   max-instances: 4
   min-instances: 1
@@ -15,11 +15,15 @@ spec:
           terminationGracePeriodSeconds: 0
           containers:
           - args:
-            - 'curl -s https://lsalab.cs.nthu.edu.tw/~ericyeh/DRAGON/mnist-df.py | python3 -'
+            #- 'sleep 99d'
+            - 'curl -s http://140.114.78.229/web/mnist-new.py | python3 -'
+            env:
+            - name: global_steps
+              value: "100000"
             command:
             - /bin/bash
             - -c
-            image: tensorflow/tensorflow:1.15.0-py3
+            image: ncy9371/tensorflow:1.15.2-py3-noavx
             name: tensorflow
             ports:
             - containerPort: 2222
@@ -32,19 +36,20 @@ spec:
           terminationGracePeriodSeconds: 0
           containers:
           - args:
-            - 'curl -s https://lsalab.cs.nthu.edu.tw/~ericyeh/DRAGON/mnist-df.py | python3 -'
+            #- 'sleep 99d'
+            - 'curl -s http://140.114.78.229/web/mnist-new.py | python3 -'
             env:
             - name: global_steps
               value: "100000"
             command:
             - /bin/bash
             - -c
-            image: tensorflow/tensorflow:1.15.0-py3
+            image: ncy9371/tensorflow:1.15.2-py3-noavx
             name: tensorflow
             ports:
             - containerPort: 2222
               name: tfjob-port
             resources:
               requests:
-                cpu: "1"
+                cpu: "4"
                 memory: "4Gi"

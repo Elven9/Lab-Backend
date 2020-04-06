@@ -81,7 +81,7 @@ func GetSystemInfo(ctx *gin.Context) {
 		result = append(result, systemInfo{
 			NodeType:      item.Metadata.Name,
 			NodeCount:     1,
-			CPUType:       info.NodeName,
+			CPUType:       info.CPUType,
 			CPUCapacity:   item.Status.Capacity.Pods,
 			CPUCount:      item.Status.Capacity.CPU,
 			MemorySize:    item.Status.Capacity.Memory,

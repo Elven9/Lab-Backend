@@ -1,7 +1,23 @@
 [
   {
-    "nodeName": "k8s-api-0",
-    "cpuType": "Intel(R) Xeon(R) CPU E5-2648L v2 @ 1.90GHz",
+    "nodeName": "monitor-1",
+    "cpuType": "TODO",
+    "gpuType": "TODO",
+    "gpuCapacity": "TODO",
+    "gpuCount": "TODO",
+    "gpuMemorySize": "TODO"
+  },
+  {
+    "nodeName": "monitor-2",
+    "cpuType": "TODO",
+    "gpuType": "TODO",
+    "gpuCapacity": "TODO",
+    "gpuCount": "TODO",
+    "gpuMemorySize": "TODO"
+  },
+  {
+    "nodeName": "monitor-3",
+    "cpuType": "TODO",
     "gpuType": "TODO",
     "gpuCapacity": "TODO",
     "gpuCount": "TODO",
