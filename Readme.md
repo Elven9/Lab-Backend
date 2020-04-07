@@ -53,4 +53,4 @@ zsh upgrade-script.sh
   - [ ] 數據：分散率
 - Scaling
   - [ ] Worker 數量變化（current vs target）
-  - [ ] Resource Utilization ( 每個 Node 上 Target 值總和 )
+  - [x] Resource Utilization ( 每個 Node 上 Target 值總和 )

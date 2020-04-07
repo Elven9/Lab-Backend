@@ -14,6 +14,9 @@ func SetUpRouter(engine *gin.Engine) {
 	// Allocation
 	engine.GET("resource/allocation", handler.GetAllocation)
 
+	// Utilization
+	engine.GET("resource/utilization", handler.GetUtilization)
+
 	// Jobs
 	engine.GET("job/getJobs", handler.GetJobs)
 	engine.GET("job/systemwideStatus", handler.GetSystemwideStatus)
