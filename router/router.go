@@ -12,7 +12,7 @@ func SetUpRouter(engine *gin.Engine) {
 	engine.GET("system/hardwareSpec", handler.GetSystemInfo)
 
 	// Allocation
-	engine.POST("resource/allocation", handler.GetAllocation)
+	engine.GET("resource/allocation", handler.GetAllocation)
 
 	// Jobs
 	engine.GET("job/getJobs", handler.GetJobs)

@@ -49,7 +49,7 @@ zsh upgrade-script.sh
   - [x] Jobs Average Waiting Time
   - [x] Jobs Average Complete Time
 - Locality
-  - [ ] ps/worker position on each nodes
+  - [x] ps/worker position on each nodes
   - [ ] 數據：分散率
 - Scaling
   - [ ] Worker 數量變化（current vs target）
