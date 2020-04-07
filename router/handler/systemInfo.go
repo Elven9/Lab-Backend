@@ -3,33 +3,19 @@ package handler
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 	"log"
-	"os"
 	"os/exec"
 
 	"github.com/gin-gonic/gin"
 )
 
 type systemInfo struct {
-	NodeType      string `json:"node_type"`
-	NodeCount     int    `json:"node_count"`
-	CPUType       string `json:"cpu_type"`
-	CPUCapacity   string `json:"cpu_capacity"`
-	CPUCount      string `json:"cpu_count"`
-	MemorySize    string `json:"memory_size"`
-	GPUType       string `json:"gqu_type"`
-	GPUCapacity   string `json:"gpu_capacity"`
-	GPUCount      string `json:"gpu_count"`
-	GPUMemorySize string `json:"gpu_memory_size"`
-}
-
-type hardcodedInfo struct {
-	NodeName      string `json:"nodeName"`
-	CPUType       string `json:"cpuType"`
-	GPUType       string `json:"gpuType"`
-	GPUCapacity   string `json:"gpuCapacity"`
-	GPUCount      string `json:"gpuCount"`
-	GPUMemorySize string `json:"gpuMemorySize"`
+	NodeName    string `json:"node_name"`
+	NodeInfo    string `json:"node_infp"`
+	CPUCapacity string `json:"cpu_capacity"`
+	CPUCount    string `json:"cpu_count"`
+	MemorySize  string `json:"memory_size"`
 }
 
 // GetSystemInfo ,Handler Func for System Info.
@@ -56,6 +42,11 @@ func GetSystemInfo(ctx *gin.Context) {
 					Memory string `json:"memory"`
 					Pods   string `json:"pods"`
 				} `json:"capacity"`
+				NodeInfo struct {
+					Architecture string `json:"architecture"`
+					OS           string `json:"operatingSystem"`
+					OSImage      string `json:"osImage"`
+				} `json:"nodeInfo"`
 			} `json:"status"`
 		} `json:"items"`
 	}
@@ -64,31 +55,14 @@ func GetSystemInfo(ctx *gin.Context) {
 	json.Unmarshal(outBuf.Bytes(), &nodeInfos)
 
 	// Construct final payload
-	var realHardwareInfo []hardcodedInfo
-	hardwareInfoFile, _ := os.Open("./hardwareInfo.json")
-	decoder := json.NewDecoder(hardwareInfoFile)
-	decoder.Decode(&realHardwareInfo)
-
 	var result []systemInfo
 	for _, item := range nodeInfos.Items {
-		// real hardware info
-		var info hardcodedInfo
-		for _, i := range realHardwareInfo {
-			if item.Metadata.Name == i.NodeName {
-				info = i
-			}
-		}
 		result = append(result, systemInfo{
-			NodeType:      item.Metadata.Name,
-			NodeCount:     1,
-			CPUType:       info.CPUType,
-			CPUCapacity:   item.Status.Capacity.Pods,
-			CPUCount:      item.Status.Capacity.CPU,
-			MemorySize:    item.Status.Capacity.Memory,
-			GPUType:       info.GPUType,
-			GPUCapacity:   info.GPUCapacity,
-			GPUCount:      info.GPUCount,
-			GPUMemorySize: info.GPUMemorySize,
+			NodeName:    item.Metadata.Name,
+			NodeInfo:    fmt.Sprintf("%s %s, %s", item.Status.NodeInfo.OS, item.Status.NodeInfo.Architecture, item.Status.NodeInfo.OSImage),
+			CPUCapacity: fmt.Sprintf("%s pod(s)", item.Status.Capacity.Pods),
+			CPUCount:    fmt.Sprintf("%s core(s)", item.Status.Capacity.CPU),
+			MemorySize:  item.Status.Capacity.Memory,
 		})
 	}
 

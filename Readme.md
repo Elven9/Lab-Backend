@@ -35,3 +35,22 @@ zsh upgrade-script.sh
 - scaling主要就是要看worker數量的變化(原本設定vs目前有多少)，還有目前的resource utilization
 (overview) 每個node的累計資源長條圖
 (per job) 目前的scale和initial scale的差距
+
+### Project Process
+
+- 系統狀態
+  - [x] 固定資源有多少
+  - [ ] 資源目前剩多少
+  - [ ] alarm
+- Scheduling
+  - [x] Waiting Job Number
+  - [x] Running Job Number
+  - [x] Finish Job Number
+  - [x] Jobs Average Waiting Time
+  - [x] Jobs Average Complete Time
+- Locality
+  - [x] ps/worker position on each nodes
+  - [ ] 數據：分散率
+- Scaling
+  - [ ] Worker 數量變化（current vs target）
+  - [x] Resource Utilization ( 每個 Node 上 Target 值總和 )

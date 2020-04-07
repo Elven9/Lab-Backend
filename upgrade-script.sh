@@ -1,4 +1,6 @@
 # /usr/bin/zsh
+# $1 -> for container's name
+# $2 -> for container's exposed port
 # Update Code
 git pull
 
@@ -14,4 +16,4 @@ docker build -t elven9/lab-backend:latest .
 yes | docker image prune
 
 # Run Container
-docker run -d --name lab-backend -p 9000:8080 elven9/lab-backend:latest
+docker run -d --name $1 -p $2:8080 elven9/lab-backend:latest

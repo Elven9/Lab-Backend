@@ -2,6 +2,7 @@ FROM golang:1.14.0-alpine3.11 AS build
 
 # Copy File
 COPY router /root/source/router
+COPY utils /root/source/utils
 COPY go.mod go.sum main.go /root/source/
 
 WORKDIR /root/source/
