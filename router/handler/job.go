@@ -16,7 +16,6 @@ import (
 type jobInfo struct {
 	JobName        string `json:"job_name"`
 	JobID          string `json:"job_id"`
-	JobType        string `json:"job_type"`
 	SubmissionTime string `json:"submission_time"`
 	StartTime      string `json:"start_time"`
 	EndTime        string `json:"end_time"`
@@ -185,16 +184,16 @@ func GetJobs(ctx *gin.Context) {
 		condition.CreateTime = item.Metadata.CreationTimestamp
 
 		exeTime, _ := condition.GetExecutionTime("Minute")
+		waitTime, _ := condition.GetWaitingTime()
 
 		result = append(result, jobInfo{
 			JobName:        item.Metadata.Name,
 			JobID:          item.Metadata.UID,
-			JobType:        "TODO",
 			SubmissionTime: item.Metadata.CreationTimestamp,
 			StartTime:      item.Status.StartTime,
 			EndTime:        item.Status.CompletionTime,
 			ExeTime:        exeTime,
-			WaitTime:       "TODO",
+			WaitTime:       fmt.Sprintf("%f Sec.", waitTime),
 			State:          condition.GetState(),
 		})
 	}
