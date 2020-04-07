@@ -5,8 +5,8 @@
 git pull
 
 # Stop Container
-docker container stop lab-backend
-docker container rm lab-backend
+docker container stop $1
+docker container rm $1
 
 # Build Image
 docker image rm elven9/lab-backend:latest
