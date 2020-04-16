@@ -96,10 +96,10 @@ func (jc *JobConditions) GetExecutionTime(format string) (string, error) {
 	}
 }
 
-func (jc *JobConditions) GetWaitingTime() (float64, error) {
+func (jc *JobConditions) GetWaitingTime(format string) (string, error) {
 	state := jc.GetState()
 	if state == 3 {
-		return 0, fmt.Errorf("job is still waiting")
+		return "", fmt.Errorf("job is still waiting")
 	}
 
 	var startTime time.Time
@@ -111,8 +111,15 @@ func (jc *JobConditions) GetWaitingTime() (float64, error) {
 	}
 
 	submitTime, _ := time.Parse(time.RFC3339, jc.CreateTime)
+	waitTime := startTime.Sub(submitTime).String()
 	waitDuration, _ := time.ParseDuration(startTime.Sub(submitTime).String())
 
-	return waitDuration.Seconds(), nil
-
+	if format == "Minute" {
+		return waitTime, nil
+	} else if format == "Second" {
+		return fmt.Sprintf("%f", waitDuration.Seconds()), nil
+	} else {
+		// Unsupported Format
+		return "", fmt.Errorf("unsupported format encountered")
+	}
 }

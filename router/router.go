@@ -19,5 +19,6 @@ func SetUpRouter(engine *gin.Engine) {
 
 	// Jobs
 	engine.GET("job/getJobs", handler.GetJobs)
+	engine.GET("job/getJob", handler.GetJob)
 	engine.GET("job/systemwideStatus", handler.GetSystemwideStatus)
 }

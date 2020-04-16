@@ -17,6 +17,10 @@ type jobInformation struct {
 		StartTime      string `json:"startTime"`
 		Conditions     []SingleJobCondition
 	} `json:"status"`
+	Spec struct {
+		MaxInstances int `json:"max-instances"`
+		MinInstances int `json:"min-instances"`
+	} `json:"spec"`
 }
 
 // SingleJobCondition ,Job Condition Section Wrapper
