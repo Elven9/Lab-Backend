@@ -40,7 +40,7 @@ zsh upgrade-script.sh
 
 - 系統狀態
   - [x] 固定資源有多少
-  - [ ] 資源目前剩多少
+  - [x] 資源目前剩多少
   - [ ] alarm
 - Scheduling
   - [x] Waiting Job Number
@@ -52,5 +52,16 @@ zsh upgrade-script.sh
   - [x] ps/worker position on each nodes
   - [ ] 數據：分散率
 - Scaling
-  - [ ] Worker 數量變化（current vs target）
   - [x] Resource Utilization ( 每個 Node 上 Target 值總和 )
+- Job List and Single Job Page
+  - [ ] job waiting time, running time, completion time, and each of timestamp
+  - [ ] 每個job的分散率、以job的角度來看worker在哪些node
+  - [ ] 目前的scale和initial scale的差距
+
+### Project Detail
+
+數據分散率算法：
+
+```
+node上有該job的worker / 一個job最少可以用幾個node就能跑
+```

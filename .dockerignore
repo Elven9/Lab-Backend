@@ -1,4 +1,12 @@
 # None of file need to be ignore for now.
 .gitignore
 Dockerfile
-Docker
+
+# Readme File
+Readme.md
+
+# Job Management Script
+./dragon-test-yaml
+
+# Upgrade Script
+upgrade-script.sh
