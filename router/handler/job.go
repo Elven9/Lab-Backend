@@ -4,7 +4,6 @@ import (
 	"Elven9/Lab-Backend/service/jobs"
 	"Elven9/Lab-Backend/utils"
 	"bytes"
-	"encoding/json"
 	"fmt"
 	"log"
 	"os/exec"
@@ -15,13 +14,18 @@ import (
 
 type jobInfo struct {
 	JobName        string `json:"job_name"`
-	JobID          string `json:"job_id"`
 	SubmissionTime string `json:"submission_time"`
 	StartTime      string `json:"start_time"`
 	EndTime        string `json:"end_time"`
 	ExeTime        string `json:"exe_time"`
 	WaitTime       string `json:"wait_time"`
 	State          int    `json:"state"`
+}
+
+type getJobsPayload struct {
+	jobInfo
+	PsCount     int `json:"ps_count"`
+	WorkerCount int `json:"worker_count"`
 }
 
 // GetJobs ,取得 TF JOBS 的資料
@@ -39,23 +43,27 @@ func GetJobs(ctx *gin.Context) {
 	jobs, _ := jobs.CreateJobs(outBuf)
 
 	// Construct Final Result
-	var result []jobInfo
+	var result []getJobsPayload
 
 	for _, job := range jobs {
 
 		exeTime, _ := job.GetExecutionTime("Minute")
 		waitTime, _ := job.GetWaitingTime("Minute")
 
-		result = append(result, jobInfo{
-			JobName:        job.Name,
-			JobID:          job.UID,
-			SubmissionTime: job.CreateTime,
-			StartTime:      job.StartTime,
-			EndTime:        job.CompletionTime,
-			ExeTime:        exeTime,
-			WaitTime:       waitTime,
-			State:          job.GetState(),
-		})
+		job.RecordActivePod()
+
+		var p getJobsPayload
+		p.JobName = job.Name
+		p.WaitTime = waitTime
+		p.State = job.GetState()
+		p.ExeTime = exeTime
+		p.PsCount = job.GetPsCount()
+		p.WorkerCount = job.GetWorkerCount()
+		p.SubmissionTime = job.CreateTime
+		p.StartTime = job.StartTime
+		p.EndTime = job.CompletionTime
+
+		result = append(result, p)
 	}
 
 	ctx.JSON(200, result)
@@ -129,9 +137,9 @@ type workerNodePair struct {
 }
 
 type getJobPayload struct {
-	Info           jobInfo          `json:"info"`
-	DispersionRate float64          `json:"dispersion_rate"`
-	WorkerNodePair []workerNodePair `json:"worker_node_pair"`
+	Info           jobInfo               `json:"info"`
+	DispersionRate float64               `json:"dispersion_rate"`
+	WorkerNodePair []jobs.WorkerNodePair `json:"worker_node_pair"`
 }
 
 // GetJob , Get Single Job Information
@@ -177,61 +185,19 @@ func GetJob(ctx *gin.Context) {
 	exeTime, _ := jobs[0].GetExecutionTime("Minute")
 	waitTime, _ := jobs[0].GetWaitingTime("Minute")
 
-	// Compute Dispersion Rate
-	outBuf.Reset()
-	cmd = exec.Command("kubectl", "get", "pod", "-o", "json", "-l", fmt.Sprintf("tf-job-name=%s", jobName))
-	cmd.Stdout = &outBuf
-	err = cmd.Run()
+	// Compute Dispersion Rate and Get Workers Pod
+	err = jobs[0].RecordActivePod()
 	if err != nil {
 		utils.PushError(500, utils.CustomError{
-			Msg:     "Kubectl Command Execution Failed",
-			Command: fmt.Sprintf("kubectl get pod -o json -l tf-job-name=%s", jobName),
+			Msg: "Server Internal Error",
 		}, err, ctx)
 		return
-	}
-
-	var jobPods struct {
-		Items []struct {
-			Metadata struct {
-				Labels struct {
-					Type  string `json:"tf-replica-type"`
-					Index string `json:"tf-replica-index"`
-				} `json:"labels"`
-			} `json:"metadata"`
-			Spec struct {
-				NodeName string `json:"nodeName"`
-			} `json:"spec"`
-		} `json:"items"`
-	}
-
-	err = json.Unmarshal(outBuf.Bytes(), &jobPods)
-	if err != nil {
-		utils.PushError(500, utils.CustomError{
-			Msg: "Error Happened During Parse Pod Information",
-		}, err, ctx)
-		return
-	}
-
-	// Calculate How Many Nodes that Have Worker of This TFJOB
-	nodeNameMap := make(map[string]int)
-
-	// Construct Node-Pod Pair
-	var pairList []workerNodePair
-
-	for _, pod := range jobPods.Items {
-		nodeNameMap[pod.Spec.NodeName]++
-
-		pairList = append(pairList, workerNodePair{
-			Node:   pod.Spec.NodeName,
-			Worker: fmt.Sprintf("%s-%s", pod.Metadata.Labels.Type, pod.Metadata.Labels.Index),
-		})
 	}
 
 	// Construct Response Payload
 	result := getJobPayload{
 		Info: jobInfo{
 			JobName:        jobs[0].Name,
-			JobID:          jobs[0].UID,
 			SubmissionTime: jobs[0].CreateTime,
 			StartTime:      jobs[0].StartTime,
 			EndTime:        jobs[0].CompletionTime,
@@ -239,8 +205,8 @@ func GetJob(ctx *gin.Context) {
 			WaitTime:       waitTime,
 			State:          jobs[0].GetState(),
 		},
-		DispersionRate: float64(len(nodeNameMap)) / float64(jobs[0].MinInstance),
-		WorkerNodePair: pairList,
+		DispersionRate: jobs[0].DispersionRate,
+		WorkerNodePair: jobs[0].Workers,
 	}
 
 	ctx.JSON(200, result)

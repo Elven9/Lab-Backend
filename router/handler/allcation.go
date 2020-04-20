@@ -6,16 +6,18 @@ import (
 	"encoding/json"
 	"log"
 	"os/exec"
+	"strconv"
 
 	"github.com/gin-gonic/gin"
 )
 
 type podData struct {
-	JobName      string `json:"job_name"`
-	ReplicaIndex string `json:"replca_index"`
-	ReplicaType  string `json:"replica_type"`
-	CPUUsage     string `json:"cpuUsage"`
-	MemUsage     string `json:"memUsage"`
+	JobName      string  `json:"job_name"`
+	ReplicaIndex string  `json:"replca_index"`
+	ReplicaType  string  `json:"replica_type"`
+	CPUUsage     string  `json:"cpuUsage"`
+	MemUsage     string  `json:"memUsage"`
+	Percentage   float64 `json:"percentage"`
 }
 
 type nodesData struct {
@@ -60,6 +62,9 @@ func GetAllocation(ctx *gin.Context) {
 
 	json.Unmarshal(outBuf.Bytes(), &pods)
 
+	// Get Node Resource
+	resource, _ := utils.GetNodesResource()
+
 	// Generate Response Payload
 	var res []nodesData
 	nodesName, _ := utils.GetNodesName()
@@ -73,6 +78,8 @@ func GetAllocation(ctx *gin.Context) {
 	// Populate Data
 	for _, item := range pods.Items {
 		for idx, node := range res {
+			cpuInNode, _ := strconv.ParseFloat(resource[idx].CPU, 64)
+			cpu, _ := strconv.ParseFloat(item.Spec.Containers[0].Resources.Requests.CPU, 64)
 			if item.Spec.NodeName == node.NodeName {
 				res[idx].Pods = append(res[idx].Pods, podData{
 					JobName:      item.Metadata.Labels.JobName,
@@ -80,6 +87,7 @@ func GetAllocation(ctx *gin.Context) {
 					ReplicaType:  item.Metadata.Labels.ReplicaType,
 					CPUUsage:     item.Spec.Containers[0].Resources.Requests.CPU,
 					MemUsage:     item.Spec.Containers[0].Resources.Requests.Memory,
+					Percentage:   cpu / cpuInNode * 100.0,
 				})
 			}
 		}
