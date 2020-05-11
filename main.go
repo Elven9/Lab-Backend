@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"log"
 	"os"
 
@@ -13,6 +14,7 @@ import (
 
 // Program Argument Definition
 var toEscapeCheck bool
+var port int
 
 func init() {
 	// 目前先站時設定 Log 到 Standard Output
@@ -20,6 +22,7 @@ func init() {
 
 	// Get Program Argument
 	flag.BoolVar(&toEscapeCheck, "escapeCheck", false, "Set if Want to Escape Preflight Check.")
+	flag.IntVar(&port, "p", 8080, "Server Bind Port")
 
 	flag.Parse()
 
@@ -44,5 +47,5 @@ func main() {
 
 	router.SetUpRouter(engine)
 
-	engine.Run(":8080")
+	engine.Run(fmt.Sprintf(":%d", port))
 }
