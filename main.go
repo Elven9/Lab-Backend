@@ -36,6 +36,8 @@ func init() {
 		} else {
 			file.Close()
 		}
+	} else {
+		log.Println("Preflight Check Escaped.")
 	}
 }
 
