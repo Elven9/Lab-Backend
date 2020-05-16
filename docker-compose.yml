@@ -21,11 +21,11 @@ services:
   # Api Server
   api-server:
     image: elven9/lab-backend:latest
-    volumes: 
-      - type: bind
-        source: /etc/kubernetes/admin.conf
-        target: /root/.kube/config
-    # command: [ "-escapeCheck=true" ]
+    # volumes: 
+    #   - type: bind
+    #     source: /etc/kubernetes/admin.conf
+    #     target: /root/.kube/config
+    command: [ "-escapeCheck=true" ]
 
   # Nginx Reverse Proxy Server
   nginx-reverse-proxy-server:
