@@ -1,0 +1,43 @@
+version: '3.8'
+services:
+  # Front End Page Server (Monitor)
+  front-end-server:
+    image: elven9/lab-monitor:latest
+    environment: 
+      - PORT=${FRONT_END_PORT:-3000}
+
+  # Grafana
+  grafana:
+    image: grafana/grafana
+    volumes:
+      - type: volume
+        source: grafana-storage
+        target: /var/lib/grafana
+    environment:
+      - GF_SERVER_DOMAIN=localhost
+      - GF_SERVER_ROOT_URL=https://localhost:3000/grafana/
+      - GF_SERVER_SERVE_FROM_SUB_PATH=true
+  
+  # Api Server
+  api-server:
+    image: elven9/lab-backend:latest
+    volumes: 
+      - type: bind
+        source: /etc/kubernetes/admin.conf
+        target: /root/.kube/config
+    # command: [ "-escapeCheck=true" ]
+
+  # Nginx Reverse Proxy Server
+  nginx-reverse-proxy-server:
+    image: nginx
+    ports: 
+      - "8080:8080"
+    volumes: 
+      - ${DOCKER_COMPOSE_PWD}/nginx-reverse-proxy/nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - "front-end-server"
+      - "grafana"
+      - "api-server"
+
+volumes: 
+  grafana-storage:

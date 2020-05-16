@@ -1,5 +1,11 @@
 # Elven9/Lab-Backend
 
+## Deploy a Whole Server Stack
+
+```zsh
+zsh setup-server.sh
+```
+
 ## Installation & Run
 
 Install Server's Container And Run it.
@@ -9,10 +15,10 @@ Install Server's Container And Run it.
 docker pull elven9/lab-backend:latest
 
 # Create Container
-docker run -d --name api-server --mount type=bind,source=/etc/kubernetes/admin.conf,target=/root/.kube/config elven9/lab-backend:latest -port=9000
+docker run -d --name api-server --mount type=bind,source=/etc/kubernetes/admin.conf,target=/root/.kube/config elven9/lab-backend:latest
 
 # Test Version
-docker run -d --name api-server elven9/lab-backend:latest -p=9000 -escapeCheck=true
+docker run -d --name api-server elven9/lab-backend:latest -escapeCheck=true
 ```
 
 Or you can build the image yourself on your computer:
