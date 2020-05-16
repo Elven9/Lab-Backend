@@ -17,6 +17,7 @@ services:
       - GF_SERVER_DOMAIN=localhost
       - GF_SERVER_ROOT_URL=https://localhost:3000/grafana/
       - GF_SERVER_SERVE_FROM_SUB_PATH=true
+      - GF_SECURITY_ALLOW_EMBEDDING=true
   
   # Api Server
   api-server:
