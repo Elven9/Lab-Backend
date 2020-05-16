@@ -1,4 +1,21 @@
-# Grafana Query
+# Grafana
+
+## Socker Image Run Configuration
+
+```shell
+# Create Container
+docker run -d --name grafana \
+           -v grafana-storage:/var/lib/grafana \
+           -e "GF_SERVER_DOMAIN=localhost" \
+           -e "GF_SERVER_ROOT_URL=https://localhost:3000/grafana/" \
+           -e "GF_SERVER_SERVE_FROM_SUB_PATH=true" \
+           grafana/grafana
+
+# Attach to a Network
+docker network connect test-network grafana
+```
+
+## Query Backup
 
 PromQL
 

@@ -9,7 +9,10 @@ Install Server's Container And Run it.
 docker pull elven9/lab-backend:latest
 
 # Create Container
-docker run -d --name lab-backend -p 9000:8080 --mount type=bind,source=/etc/kubernetes/admin.conf,target=/root/.kube/config elven9/lab-backend:latest
+docker run -d --name api-server --mount type=bind,source=/etc/kubernetes/admin.conf,target=/root/.kube/config elven9/lab-backend:latest -port=9000
+
+# Test Version
+docker run -d --name api-server elven9/lab-backend:latest -p=9000 -escapeCheck=true
 ```
 
 Or you can build the image yourself on your computer:
@@ -18,7 +21,7 @@ Or you can build the image yourself on your computer:
 # Upgrade Script
 zsh upgrade-script.sh
 
-# Run The Same Command Mentioned Above
+# Run The Same Command Mentioned One Section Above
 ```
 
 ## Requirement
