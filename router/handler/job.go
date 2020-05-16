@@ -214,9 +214,8 @@ func GetJob(ctx *gin.Context) {
 			WaitTime:       waitTime,
 			State:          jobs[0].GetState(),
 		},
-		DispersionRate:   jobs[0].DispersionRate,
-		WorkerNodePair:   jobs[0].Workers,
-		CPUUsageOvertime: cpuOvertime,
+		DispersionRate: jobs[0].DispersionRate,
+		WorkerNodePair: jobs[0].Workers,
 	}
 
 	ctx.JSON(200, result)
