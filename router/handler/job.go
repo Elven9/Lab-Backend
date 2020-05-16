@@ -195,13 +195,13 @@ func GetJob(ctx *gin.Context) {
 		return
 	}
 
-	cpuOvertime, err := jobs[0].GetCPUUsageOvertime()
-	if err != nil {
-		utils.PushError(500, utils.CustomError{
-			Msg: "Server Internal Error",
-		}, err, ctx)
-		return
-	}
+	// cpuOvertime, err := jobs[0].GetCPUUsageOvertime()
+	// if err != nil {
+	// 	utils.PushError(500, utils.CustomError{
+	// 		Msg: "Server Internal Error",
+	// 	}, err, ctx)
+	// 	return
+	// }
 
 	// Construct Response Payload
 	result := getJobPayload{
