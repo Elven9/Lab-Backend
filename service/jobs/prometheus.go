@@ -16,7 +16,7 @@ type PrometheusValue struct {
 }
 
 func (j *Job) query(str string) ([]byte, error) {
-	response, err := http.Get(fmt.Sprintf("http://localhost:9090/api/v1/query?query=%s", str))
+	response, err := http.Get(fmt.Sprintf("http://prometheus-port-fowarding:9090/api/v1/query?query=%s", str))
 
 	if err != nil {
 		return nil, fmt.Errorf("[Prometheus.query] Access Prometheus Server Timeout")
