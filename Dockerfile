@@ -18,12 +18,10 @@ RUN apk update \
     && chmod +x ./kubectl \
     && mv ./kubectl /bin/kubectl
 
-COPY k8s-config /root/.kube/config
-
 COPY --from=build /root/source/server /root/server
 
 EXPOSE 8080/tcp
 
 ENV GIN_MODE=release
 
-CMD ["./server"]
+ENTRYPOINT ["./server"]

@@ -10,3 +10,6 @@ Readme.md
 
 # Upgrade Script
 upgrade-script.sh
+
+# Grafana Backup
+./Grafana

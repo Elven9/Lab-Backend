@@ -137,9 +137,10 @@ type workerNodePair struct {
 }
 
 type getJobPayload struct {
-	Info           jobInfo               `json:"info"`
-	DispersionRate float64               `json:"dispersion_rate"`
-	WorkerNodePair []jobs.WorkerNodePair `json:"worker_node_pair"`
+	Info             jobInfo                `json:"info"`
+	DispersionRate   float64                `json:"dispersion_rate"`
+	WorkerNodePair   []jobs.WorkerNodePair  `json:"worker_node_pair"`
+	CPUUsageOvertime []jobs.PrometheusValue `json:"cpu_usage_overtime"`
 }
 
 // GetJob , Get Single Job Information
@@ -194,6 +195,14 @@ func GetJob(ctx *gin.Context) {
 		return
 	}
 
+	cpuOvertime, err := jobs[0].GetCPUUsageOvertime()
+	if err != nil {
+		utils.PushError(500, utils.CustomError{
+			Msg: "Server Internal Error",
+		}, err, ctx)
+		return
+	}
+
 	// Construct Response Payload
 	result := getJobPayload{
 		Info: jobInfo{
@@ -205,8 +214,9 @@ func GetJob(ctx *gin.Context) {
 			WaitTime:       waitTime,
 			State:          jobs[0].GetState(),
 		},
-		DispersionRate: jobs[0].DispersionRate,
-		WorkerNodePair: jobs[0].Workers,
+		DispersionRate:   jobs[0].DispersionRate,
+		WorkerNodePair:   jobs[0].Workers,
+		CPUUsageOvertime: cpuOvertime,
 	}
 
 	ctx.JSON(200, result)
