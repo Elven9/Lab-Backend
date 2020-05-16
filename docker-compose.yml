@@ -44,9 +44,9 @@ services:
   prometheus-port-fowarding:
     image: bitnami/kubectl
     volumes: 
-      type: bind
-      source: ~/.kube/config
-      target: /.kube/config
+      - type: bind
+        source: ~/.kube/config
+        target: /.kube/config
     command: ["--namespace", "monitoring", "port-forward", "svc/prometheus-k8s", "9090"]
 
 volumes: 
