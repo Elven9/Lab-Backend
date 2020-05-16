@@ -11,4 +11,4 @@ export DOCKER_COMPOSE_PWD=$(pwd)
 export FRONT_END_PORT=3000
 
 # Docker Compose
-docker-compose up
+docker-compose up -d
